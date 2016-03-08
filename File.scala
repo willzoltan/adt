@@ -86,9 +86,26 @@ class File(initLocation: String, delimiter: String)  extends AbstractFile {
   }
   
   def row(i: Int): ArrayBuffer[String] = {
-    assert(i>=0 && i<rowCount)
-    rows(i)
-  }
+     assert( i>=0 && i < rowCount)
+     rows(i)
+        }
+ 
+ def returnArray(row_num:Int, col_num:Int): Array[Array[String]] = {
+   val big_array = new Array[Array[String]](row_num)
+ 
+   var i = 0
+   while (i != row_num) { 
+      var entry = new Array[String](col_num)
+      var v = row(i)
+      for (j <- 0 to col_num -1) {
+        entry(j) = v(j).toString
+      }
+      big_array(i) = entry
+      i += 1
+
+   }
+   big_array
+ }
   
   def rowCount: Int = numberRows
   
@@ -105,3 +122,4 @@ class File(initLocation: String, delimiter: String)  extends AbstractFile {
     matchingRows
   }
 }
+

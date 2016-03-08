@@ -1,6 +1,6 @@
 all: .compiled
 
-SOURCE = File.scala Match.scala
+SOURCE = MyTable.scala File.scala Match.scala 
 
 .compiled: $(SOURCE)
 	@mkdir -p bin
