@@ -1,9 +1,10 @@
-package TABLE
+//package TABLE
 
 import scala.swing._
 import scala.swing.event._
 import javax.swing.table._
 import javax.swing.JFileChooser
+import IO.File
 
 class MyTableModel(var rowData: Array[Array[String]], val columnNames: Seq[String]) extends AbstractTableModel {
   override def getColumnName(column: Int) = columnNames(column).toString
@@ -18,7 +19,7 @@ class MyTableModel(var rowData: Array[Array[String]], val columnNames: Seq[Strin
 
 /* We will eventually remove the parameters from this class definition.
  * The main method will be moved here. */
-class MyTable(info: Array[Array[String]], columnheaders: List[String], row_num: Int, col_num: Int, find: Array[Int]) extends SimpleSwingApplication {
+object MyTable extends SimpleSwingApplication {
 
   val top = new MainFrame {
 
@@ -28,9 +29,17 @@ class MyTable(info: Array[Array[String]], columnheaders: List[String], row_num: 
     val topPreferredSize  = new Dimension(xsize, ysize)
     preferredSize = topPreferredSize
 
-    val tableModel = new MyTableModel(info, columnheaders) 
-    val table1      = new Table(row_num, col_num) { model = tableModel } 
-    val table2      = new Table(row_num, col_num) { model = tableModel }
+     var row_num1 = 0; var row_num2 = 0
+     var col_num1 = 0; var col_num2 = 0
+     var info1 = new Array[Array[String]](row_num1)
+     var info2 = new Array[Array[String]](row_num2)
+     var columnheaders1: List[String] =  List()
+     var columnheaders2: List[String] =  List()
+
+    val tableModel1 = new MyTableModel(info1, columnheaders1) 
+    val tableModel2 = new MyTableModel(info2, columnheaders2) 
+    val table1      = new Table(row_num1, col_num1) { model = tableModel1 } 
+    val table2      = new Table(row_num2, col_num2) { model = tableModel2 }
 
 		/* Need to define these as null Files. NOTE: THIS WILL NOT COMPILE YET */
 //    var file1 = new File
@@ -59,11 +68,13 @@ class MyTable(info: Array[Array[String]], columnheaders: List[String], row_num: 
     }
 
 		val scrTable1 = new ScrollPane(table1) {
+      preferredSize = new Dimension (xsize/2, 200)
     	minimumSize = new Dimension(xsize/3, 200)
       horizontalScrollBarPolicy = ScrollPane.BarPolicy.AsNeeded
       verticalScrollBarPolicy = ScrollPane.BarPolicy.AsNeeded
 		}
 		val scrTable2 = new ScrollPane(table2) {
+      preferredSize = new Dimension (xsize/2, 200)
     	minimumSize = new Dimension(xsize/3, 200)
       horizontalScrollBarPolicy = ScrollPane.BarPolicy.AsNeeded
       verticalScrollBarPolicy = ScrollPane.BarPolicy.AsNeeded
@@ -113,16 +124,32 @@ class MyTable(info: Array[Array[String]], columnheaders: List[String], row_num: 
     var file1:java.io.File = null
     var file2:java.io.File = null
 
+
     reactions += {
       case ButtonClicked(component) =>
       	if (component == btnFile1) {
       		fileSelector(1) match {
 						case Some(file) => file1 = file
+                               val csv = new File(file1.toString)
+                               info1 = csv.returnArray(csv.rowCount, csv.columnCount)
+                               columnheaders1 = csv.columnNames.toList
+                               row_num1 = csv.rowCount
+                               col_num1 = csv.columnCount
+                               val newTableModel = new MyTableModel(info1, columnheaders1)
+                               table1.model = newTableModel
+
       		}
 				}
       	else if (component == btnFile2) {
       		fileSelector(2) match {
 						case Some(file) => file2 = file
+                               val csv = new File(file2.toString)
+                               info2 = csv.returnArray(csv.rowCount, csv.columnCount)
+                               columnheaders2 = csv.columnNames.toList
+                               row_num2 = csv.rowCount
+                               col_num2 = csv.columnCount
+                               val newTableModel = new MyTableModel(info2, columnheaders2)
+                               table2.model = newTableModel
       		}
 				}               
 				else if (component == btnMatch) {
@@ -146,18 +173,35 @@ class MyTable(info: Array[Array[String]], columnheaders: List[String], row_num: 
 
 	/* To be completed: pop-up window triggered by clicking Generate Matches */
     def matchWindow() {
-      println("Window")
+
+      //val matchfile = new Machine(info1, info2, sldMatch.value, sldType.value)
+
+
       val matchFrame = new Frame {
         preferredSize = new Dimension (400, 400)
         visible = true
+        val matchtable1 = new Table(row_num1, col_num1) { model = table1.model }
+        val scrTable1 = new ScrollPane(matchtable1) {
+          preferredSize = new Dimension (xsize/2, 200)
+          minimumSize = new Dimension(xsize/3, 200)
+          horizontalScrollBarPolicy = ScrollPane.BarPolicy.AsNeeded
+          verticalScrollBarPolicy = ScrollPane.BarPolicy.AsNeeded
+       }
+        val matchtable2 = new Table(row_num2, col_num2) { model = table2.model }
+       val scrTable2 = new ScrollPane(matchtable2) {
+          preferredSize = new Dimension (xsize/2, 200)
+          minimumSize = new Dimension(xsize/3, 200)
+          horizontalScrollBarPolicy = ScrollPane.BarPolicy.AsNeeded
+          verticalScrollBarPolicy = ScrollPane.BarPolicy.AsNeeded
+       }       
+       val tableSplit = new SplitPane(Orientation.Vertical)
+          tableSplit.leftComponent = scrTable1
+          tableSplit.rightComponent = scrTable2
+        contents = tableSplit
       }
     }
-
-	/* To be completed: visually update a table. Requires a column count instead of rowHeight */
-    def tableRepaint(table: Table) {
-      for (i <- 0 until table.rowCount; j <- 0 until table.rowHeight) { table.updateCell(i, j) }
-    }
-    
+   
   }
 
 }
+
