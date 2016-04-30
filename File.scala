@@ -13,6 +13,8 @@ trait AbstractFile {
   def columnCount : Int
   
   def rowsContaining(s: String): Array[Int]
+  
+  def equal(i: Int, row: ArrayBuffer[String]): Double   //wheter row i in this file is the same as given row, returning how similar are they
 }
 
 
@@ -121,5 +123,9 @@ class File(initLocation: String, delimiter: String)  extends AbstractFile {
           matchingRows = matchingRows :+ row
     matchingRows
   }
+  
+  def equal(i:Int, row:ArrayBuffer[String]): Double = {
+    if (rows(i) == row) { return 1} else {return 0}
+  } //Only Does Exact Match
 }
 
