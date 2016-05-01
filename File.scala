@@ -14,7 +14,7 @@ trait AbstractFile {
   
   def rowsContaining(s: String): Array[Int]
   
-  def equal(i: Int, row: ArrayBuffer[String]): Double   //wheter row i in this file is the same as given row, returning how similar are they
+  def equal(i: Int, row: ArrayBuffer[String]): Double   //wheter row i in this file is the same as given row, returning how similar they are
 }
 
 
@@ -123,9 +123,21 @@ class File(initLocation: String, delimiter: String)  extends AbstractFile {
           matchingRows = matchingRows :+ row
     matchingRows
   }
+
   
-  def equal(i:Int, row:ArrayBuffer[String]): Double = {
-    if (rows(i) == row) { return 1} else {return 0}
-  } //Only Does Exact Match
+  def equal(i: Int, row: ArrayBuffer[String]): Double = {
+	var j = 0
+	var counter = 0
+	var perc : Double = 0
+	val therow = rows(i)
+	while (j < row.length && j < therow.length){
+		if (row(j) == therow(j))
+			counter += 1
+		j += 1
+	}
+	perc = counter / row.length
+	return perc
+}
+
 }
 
