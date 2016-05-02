@@ -31,13 +31,11 @@ object MyTable extends SimpleSwingApplication {
 
      var row_num1 = 0; var row_num2 = 0
      var col_num1 = 0; var col_num2 = 0
-     var info1 = new Array[Array[String]](row_num1)
-     var info2 = new Array[Array[String]](row_num2)
      var columnheaders1: List[String] =  List()
      var columnheaders2: List[String] =  List()
 
-    val tableModel1 = new MyTableModel(info1, columnheaders1) 
-    val tableModel2 = new MyTableModel(info2, columnheaders2) 
+    val tableModel1 = new MyTableModel(new Array[Array[String]](row_num1), columnheaders1) 
+    val tableModel2 = new MyTableModel(new Array[Array[String]](row_num1), columnheaders2) 
     val table1      = new Table(row_num1, col_num1) { model = tableModel1 } 
     val table2      = new Table(row_num2, col_num2) { model = tableModel2 }
 
@@ -84,20 +82,13 @@ object MyTable extends SimpleSwingApplication {
     tableSplit.rightComponent = scrTable2
 
 		val sldMatch = new Slider {
-			min = 50
+			min = 0
 			max = 100
-			majorTickSpacing = 10
+			majorTickSpacing = 5
 			paintTicks = true
 			paintLabels = true
 		}
-		val sldType = new Slider {
-			min = 1
-			max = 5
-			majorTickSpacing = 1
-			paintTicks = true
-			paintLabels = true
-			snapToTicks = true
-		}
+		val sldType = new ComboBox (List("Equality of all columns","Equality on 1 column","N percent matching columns"))
     val btnMatch = new Button("Generate Matches")
     
     val southFlow = new FlowPanel {
@@ -121,35 +112,34 @@ object MyTable extends SimpleSwingApplication {
     listenTo(btnFile2)
     listenTo(btnMatch)
 
-    var file1:java.io.File = null
-    var file2:java.io.File = null
-
-
+    var file1: IO.File = null
+    var file2: IO.File = null
+    
     reactions += {
       case ButtonClicked(component) =>
       	if (component == btnFile1) {
       		fileSelector(1) match {
-						case Some(file) => file1 = file
-                               val csv = new File(file1.toString)
-                               info1 = csv.returnArray(csv.rowCount, csv.columnCount)
-                               columnheaders1 = csv.columnNames.toList
-                               row_num1 = csv.rowCount
-                               col_num1 = csv.columnCount
-                               val newTableModel = new MyTableModel(info1, columnheaders1)
+						case Some(file) => {
+                               file1 = new File(file.toString)
+                               columnheaders1 = file1.columnNames.toList
+                               row_num1 = file1.rowCount
+                               col_num1 = file1.columnCount
+                               val newTableModel = new MyTableModel(file1.returnArray(file1.rowCount, file1.columnCount), columnheaders1)
                                table1.model = newTableModel
+                               }
 
       		}
 				}
       	else if (component == btnFile2) {
       		fileSelector(2) match {
-						case Some(file) => file2 = file
-                               val csv = new File(file2.toString)
-                               info2 = csv.returnArray(csv.rowCount, csv.columnCount)
-                               columnheaders2 = csv.columnNames.toList
-                               row_num2 = csv.rowCount
-                               col_num2 = csv.columnCount
-                               val newTableModel = new MyTableModel(info2, columnheaders2)
+						case Some(file) =>  {
+                               file2 = new File(file.toString)
+                               columnheaders1 = file2.columnNames.toList
+                               row_num1 = file2.rowCount
+                               col_num1 = file2.columnCount
+                               val newTableModel = new MyTableModel(file2.returnArray(file2.rowCount, file2.columnCount), columnheaders1)
                                table2.model = newTableModel
+                               }
       		}
 				}               
 				else if (component == btnMatch) {
@@ -171,12 +161,23 @@ object MyTable extends SimpleSwingApplication {
       }			
     }
 
-	/* To be completed: pop-up window triggered by clicking Generate Matches */
+  	/* To be completed: pop-up window triggered by clicking Generate Matches */
     def matchWindow() {
-
-      //val matchfile = new Machine(info1, info2, sldMatch.value, sldType.value)
-
-
+    
+      //TODO: implement a drop down list instead of sldType with an option for each type of match.
+      sldType.prototypeDisplayValue match {
+        case Some("Equality of all columns") => val matchfile = new EqualityMachine(file1, file2)
+        case Some("Equality on 1 column") => val matchfile = new SingleEqualityMachine(file1, file2)
+        case Some("N percent matching columns") =>  val matchfile = new PercentageEqualityMachine(file1, file2,sldMatch.value)
+      }
+      
+      val matchfile = new EqualityMachine(file1, file2)
+      
+      val rowsWithMatches: List[Int] = matchfile.rowsWithMatches
+      val arrayOfMatches: Array[List[Int]] = matchfile.arrayOfMatches
+      
+      // TODO: Implement the left hand side table to load in the rows that have matches (stored in rowsWithMatches as list of indicies). And clicking on row(i) brings up the matches on the right hand side.
+  
       val matchFrame = new Frame {
         preferredSize = new Dimension (400, 400)
         visible = true
@@ -186,22 +187,22 @@ object MyTable extends SimpleSwingApplication {
           minimumSize = new Dimension(xsize/3, 200)
           horizontalScrollBarPolicy = ScrollPane.BarPolicy.AsNeeded
           verticalScrollBarPolicy = ScrollPane.BarPolicy.AsNeeded
-       }
+        }
+        
         val matchtable2 = new Table(row_num2, col_num2) { model = table2.model }
-       val scrTable2 = new ScrollPane(matchtable2) {
+        
+        val scrTable2 = new ScrollPane(matchtable2){
           preferredSize = new Dimension (xsize/2, 200)
           minimumSize = new Dimension(xsize/3, 200)
           horizontalScrollBarPolicy = ScrollPane.BarPolicy.AsNeeded
           verticalScrollBarPolicy = ScrollPane.BarPolicy.AsNeeded
-       }       
-       val tableSplit = new SplitPane(Orientation.Vertical)
-          tableSplit.leftComponent = scrTable1
-          tableSplit.rightComponent = scrTable2
+        }       
+        val tableSplit = new SplitPane(Orientation.Vertical)
+        tableSplit.leftComponent = scrTable1
+        tableSplit.rightComponent = scrTable2
         contents = tableSplit
       }
     }
-   
   }
-
 }
 
