@@ -8,6 +8,7 @@ import IO.File
 
 class MyTableModel(var rowData: Array[Array[String]], val columnNames: Seq[String]) extends AbstractTableModel {
   override def getColumnName(column: Int) = columnNames(column).toString
+  def getRow(i: Int): Array[String] = rowData(i)
   def getRowCount() = rowData.length
   def getColumnCount() = columnNames.length
   def getValueAt(row: Int, col: Int): String = rowData(row)(col).asInstanceOf[String]
@@ -33,15 +34,13 @@ object MyTable extends SimpleSwingApplication {
      var col_num1 = 0; var col_num2 = 0
      var columnheaders1: List[String] =  List()
      var columnheaders2: List[String] =  List()
+     var tableData1 = new Array[Array[String]](0)
+     var tableData2 = new Array[Array[String]](0)
 
     val tableModel1 = new MyTableModel(new Array[Array[String]](row_num1), columnheaders1) 
-    val tableModel2 = new MyTableModel(new Array[Array[String]](row_num1), columnheaders2) 
+    val tableModel2 = new MyTableModel(new Array[Array[String]](row_num2), columnheaders2) 
     val table1      = new Table(row_num1, col_num1) { model = tableModel1 } 
     val table2      = new Table(row_num2, col_num2) { model = tableModel2 }
-
-		/* Need to define these as null Files. NOTE: THIS WILL NOT COMPILE YET */
-//    var file1 = new File
-//    var file2 = new File
 
  		/* Contents of the MainFrame */
  		
@@ -66,13 +65,11 @@ object MyTable extends SimpleSwingApplication {
     }
 
 		val scrTable1 = new ScrollPane(table1) {
-      preferredSize = new Dimension (xsize/2, 200)
     	minimumSize = new Dimension(xsize/3, 200)
       horizontalScrollBarPolicy = ScrollPane.BarPolicy.AsNeeded
       verticalScrollBarPolicy = ScrollPane.BarPolicy.AsNeeded
 		}
 		val scrTable2 = new ScrollPane(table2) {
-      preferredSize = new Dimension (xsize/2, 200)
     	minimumSize = new Dimension(xsize/3, 200)
       horizontalScrollBarPolicy = ScrollPane.BarPolicy.AsNeeded
       verticalScrollBarPolicy = ScrollPane.BarPolicy.AsNeeded
@@ -84,16 +81,18 @@ object MyTable extends SimpleSwingApplication {
 		val sldMatch = new Slider {
 			min = 0
 			max = 100
-			majorTickSpacing = 5
+			preferredSize = new Dimension(300, 50)
+			majorTickSpacing = 10
 			paintTicks = true
 			paintLabels = true
 		}
-		val sldType = new ComboBox (List("Equality of all columns","Equality on 1 column","N percent matching columns"))
+		
+		val cmbType = new ComboBox (List("Equality of all columns","Equality on 1 column","N percent matching columns"))
     val btnMatch = new Button("Generate Matches")
     
     val southFlow = new FlowPanel {
     	contents += sldMatch
-    	contents += sldType
+    	contents += cmbType
     	contents += btnMatch
     }
 
@@ -115,6 +114,8 @@ object MyTable extends SimpleSwingApplication {
     var file1: IO.File = null
     var file2: IO.File = null
     
+    
+    
     reactions += {
       case ButtonClicked(component) =>
       	if (component == btnFile1) {
@@ -124,9 +125,11 @@ object MyTable extends SimpleSwingApplication {
                                columnheaders1 = file1.columnNames.toList
                                row_num1 = file1.rowCount
                                col_num1 = file1.columnCount
+                               tableData1 = file1.returnArray(file1.rowCount, file1.columnCount)
                                val newTableModel = new MyTableModel(file1.returnArray(file1.rowCount, file1.columnCount), columnheaders1)
                                table1.model = newTableModel
                                }
+            case None => {}
 
       		}
 				}
@@ -134,16 +137,18 @@ object MyTable extends SimpleSwingApplication {
       		fileSelector(2) match {
 						case Some(file) =>  {
                                file2 = new File(file.toString)
-                               columnheaders1 = file2.columnNames.toList
+                               columnheaders2 = file2.columnNames.toList
                                row_num1 = file2.rowCount
                                col_num1 = file2.columnCount
-                               val newTableModel = new MyTableModel(file2.returnArray(file2.rowCount, file2.columnCount), columnheaders1)
+                               tableData2 = file2.returnArray(file2.rowCount, file2.columnCount)
+                               val newTableModel = new MyTableModel(file2.returnArray(file2.rowCount, file2.columnCount), columnheaders2)
                                table2.model = newTableModel
                                }
+            case None => {}
       		}
 				}               
 				else if (component == btnMatch) {
-					matchWindow()
+					if (file1 != null && file2 != null) matchWindow() else println("No files")
 				}                   
     }
 
@@ -164,24 +169,88 @@ object MyTable extends SimpleSwingApplication {
   	/* To be completed: pop-up window triggered by clicking Generate Matches */
     def matchWindow() {
     
-      //TODO: implement a drop down list instead of sldType with an option for each type of match.
-      sldType.prototypeDisplayValue match {
-        case Some("Equality of all columns") => val matchfile = new EqualityMachine(file1, file2)
-        case Some("Equality on 1 column") => val matchfile = new SingleEqualityMachine(file1, file2)
-        case Some("N percent matching columns") =>  val matchfile = new PercentageEqualityMachine(file1, file2,sldMatch.value)
+      //TODO: implement a drop down list instead of cmbType with an option for each type of match.
+      cmbType.selection.item match {
+        case "Equality of all columns" => println("EqAll works"); val matchfile = new EqualityMachine(file1, file2)
+        case "Equality on 1 column" => val matchfile = new SingleEqualityMachine(file1, file2)
+        case "N percent matching columns" =>  val matchfile = new PercentageEqualityMachine(file1, file2,sldMatch.value)
       }
       
       val matchfile = new EqualityMachine(file1, file2)
       
-      val rowsWithMatches: List[Int] = matchfile.rowsWithMatches
+//      val rowsWithMatches: List[Int] = matchfile.rowsWithMatches
       val arrayOfMatches: Array[List[Int]] = matchfile.arrayOfMatches
+      val rowsWithMatches = List(0,2)
+      arrayOfMatches(0) = List(4,5)
+      arrayOfMatches(2) = List(1,2,3)
+      for (i <- arrayOfMatches) println(i)
       
       // TODO: Implement the left hand side table to load in the rows that have matches (stored in rowsWithMatches as list of indicies). And clicking on row(i) brings up the matches on the right hand side.
   
+  /* We want them to append the row numbers to the start of every column. */
+  
+  		var notMatched: List[Int] = List()
+  		for (i <- 0 until arrayOfMatches.length) {
+  			if (arrayOfMatches(i) == Nil) notMatched ::= i
+  		}
+  		
+  		val arraySize = arrayOfMatches.map(x => x.length).sum
+  		println("arrayOfMatches size: " + arraySize)
+  		var newTableModel1 = new Array[Array[String]](arraySize + notMatched.length)
+  		var oldRow = 0
+  		var newRow = 0
+  		for (i <- 0 until rowsWithMatches.length) {
+  			oldRow = rowsWithMatches(i)
+  			newTableModel1(newRow) = tableData1(oldRow)
+  			val num = arrayOfMatches(oldRow).length
+  			for (k <- 1 to num - 1) {
+  				newRow += 1
+  				val blankRow = new Array[String](col_num1) 
+  				blankRow.map(x => "-")
+  				blankRow(0) = oldRow.toString
+  				newTableModel1(newRow) = blankRow
+  			}
+  			newRow += 1
+  		}
+  		
+  		
+  		var newTableModel2 = new Array[Array[String]](arraySize)
+  		var rownums2: List[Int] = List()
+  		for (i <- arrayOfMatches) rownums2 = rownums2 ::: i
+  		println(rownums2)
+  		for (j <- 0 until rownums2.length) {
+  			newTableModel2(j) = tableData2(rownums2(j))
+  		}
+
+  		val newTable2 = new Table { model = new MyTableModel(newTableModel2, columnheaders2) }
+  		
+  		var curRow = rownums2.length
+  		for (i <- 0 until notMatched.length) {
+  			newTableModel1(curRow+i) = tableData1(notMatched(i))
+  		}
+  		
+  		val newTable1 = new Table { model = new MyTableModel(newTableModel1, columnheaders1) }
+  		
+  		
+  		
+  		
+  		
+  		
+  		
+  		
+  		
+  		
+  		
+  		
+  		
+  		
+  		
+  
+
       val matchFrame = new Frame {
-        preferredSize = new Dimension (400, 400)
+        preferredSize = new Dimension (xsize, ysize)
         visible = true
-        val matchtable1 = new Table(row_num1, col_num1) { model = table1.model }
+        val matchtable1 = new Table(arraySize, col_num1) { model = newTable1.model }
         val scrTable1 = new ScrollPane(matchtable1) {
           preferredSize = new Dimension (xsize/2, 200)
           minimumSize = new Dimension(xsize/3, 200)
@@ -189,7 +258,7 @@ object MyTable extends SimpleSwingApplication {
           verticalScrollBarPolicy = ScrollPane.BarPolicy.AsNeeded
         }
         
-        val matchtable2 = new Table(row_num2, col_num2) { model = table2.model }
+        val matchtable2 = new Table(arraySize, col_num2) { model = newTable2.model }
         
         val scrTable2 = new ScrollPane(matchtable2){
           preferredSize = new Dimension (xsize/2, 200)
