@@ -180,9 +180,9 @@ object MyTable extends SimpleSwingApplication {
       
 //      val rowsWithMatches: List[Int] = matchfile.rowsWithMatches
       val arrayOfMatches: Array[List[Int]] = matchfile.arrayOfMatches
-      val rowsWithMatches = List(0,2)
+      val rowsWithMatches = List(0,1)
       arrayOfMatches(0) = List(4,5)
-      arrayOfMatches(2) = List(1,2,3)
+      arrayOfMatches(1) = List(1,2,3)
       for (i <- arrayOfMatches) println(i)
       
       // TODO: Implement the left hand side table to load in the rows that have matches (stored in rowsWithMatches as list of indicies). And clicking on row(i) brings up the matches on the right hand side.
@@ -205,8 +205,8 @@ object MyTable extends SimpleSwingApplication {
   			val num = arrayOfMatches(oldRow).length
   			for (k <- 1 to num - 1) {
   				newRow += 1
-  				val blankRow = new Array[String](col_num1) 
-  				blankRow.map(x => "-")
+  				var blankRow = new Array[String](col_num1) 
+  				blankRow = blankRow.map(x => "-")
   				blankRow(0) = oldRow.toString
   				newTableModel1(newRow) = blankRow
   			}
@@ -217,7 +217,7 @@ object MyTable extends SimpleSwingApplication {
   		var newTableModel2 = new Array[Array[String]](arraySize)
   		var rownums2: List[Int] = List()
   		for (i <- arrayOfMatches) rownums2 = rownums2 ::: i
-  		println(rownums2)
+  		println(rownums2.length)
   		for (j <- 0 until rownums2.length) {
   			newTableModel2(j) = tableData2(rownums2(j))
   		}
@@ -230,22 +230,6 @@ object MyTable extends SimpleSwingApplication {
   		}
   		
   		val newTable1 = new Table { model = new MyTableModel(newTableModel1, columnheaders1) }
-  		
-  		
-  		
-  		
-  		
-  		
-  		
-  		
-  		
-  		
-  		
-  		
-  		
-  		
-  		
-  
 
       val matchFrame = new Frame {
         preferredSize = new Dimension (xsize, ysize)
