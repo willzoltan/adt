@@ -82,6 +82,42 @@ class PercentageEqualityMachine(source: File, comparator: File, percentage: Int)
   }
 }
 
+//Another implementation, files are matched if there rows have distributions of the same shape
+class DistributionMachine(source: File, comparator: File) extends PercentageEqualityMachine(source,comparator,100) {
+
+  //stores the distribution of rows of two files
+  private val sourceD = new Array[(String,Int)](source.columnCount)
+  private val compD = new Array[(String,Int)](comparator.columnCount)
+  
+  private def calcD(i:Int, j:Int) = {  //translate two rows into values of them same type(all integers), call them the distribution of the row
+  
+    var i = 0
+	var p = 0
+	while (p < source.columnCount) {
+	  update(source.row(i)(p),sourceD)
+	  p += 1
+	}
+	p = 0; i = 0
+	while (p < comparator.columnCount) {
+	  update(comparator.row(i)(p),compD)
+	  p += 1
+	}
+	
+	def update(content:String, dis: Array[(String,Int)]) = {
+	  val occ: Option[(String,Int)] = dis.find(_._1 == content)
+	  occ match {
+	    case Some(v) => { dis(p) = v}
+	    case None    => { dis(p) = (content,i) ; i += 1}
+      }
+	}
+  }
+	
+  override def matchRow(i:Int, j:Int): Boolean = {
+    calcD(i,j)
+	return (sourceD == compD)
+  }
+
+}
 
 //The implemented machine to be used
 class EqualityMachine(source: File, comparator: File) extends PercentageEqualityMachine(source, comparator,100)
