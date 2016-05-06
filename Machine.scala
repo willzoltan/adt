@@ -32,9 +32,10 @@ class RunableMachine(source: File, comparator: File) extends Machine {
   def rowInComparator(i: Int): List[Int] = {
     var matches: List[Int] = Nil
     for (j <- 0 until comparator.rowCount)
-      if (matchRow(i, j))
-        matches :+ j
-    matches
+      if (matchRow(i, j)){
+        matches = j :: matches
+      }
+    matches.reverse
   }
   
   //For the source, this returns a mapping from source row to it's matches
@@ -78,7 +79,7 @@ class PercentageEqualityMachine(source: File, comparator: File, percentage: Int)
       }
       k += 1
     }
-    return (count >= threshold)
+    return (count > threshold)
   }
 }
 
