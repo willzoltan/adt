@@ -92,15 +92,15 @@ class DistributionMachine(source: File, comparator: File) extends PercentageEqua
   
   private def calcD(i:Int, j:Int) = {  //translate two rows into values of them same type(all integers), call them the distribution of the row
   
-    var i = 0
+        var k = 0
 	var p = 0
 	while (p < source.columnCount) {
 	  update(source.row(i)(p),sourceD)
 	  p += 1
 	}
-	p = 0; i = 0
+	p = 0 ; k = 0
 	while (p < comparator.columnCount) {
-	  update(comparator.row(i)(p),compD)
+	  update(comparator.row(j)(p),compD)
 	  p += 1
 	}
 	
@@ -108,7 +108,7 @@ class DistributionMachine(source: File, comparator: File) extends PercentageEqua
 	  val occ: Option[(String,Int)] = dis.find(_._1 == content)
 	  occ match {
 	    case Some(v) => { dis(p) = v}
-	    case None    => { dis(p) = (content,i) ; i += 1}
+	    case None    => { dis(p) = (content,k) ; k += 1}
       }
 	}
   }
