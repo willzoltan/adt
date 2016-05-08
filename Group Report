@@ -1,8 +1,11 @@
 Group Report
 
-Specs 
+Introduction:
 
-The aim of the project is to construct a method to compare data sets in order to see how these files are similar. This program tests the completeness and accuracy for the transaction operations, being a mandatory requirement for MiFID Investment Firms. Completeness is checking that all transactions that should have been reported have been reported, and accuracy is examining that the transactions have been recorded with the right values. 
+The aim of the project is to construct a method to compare data sets in order to see how these files are similar. This
+program tests the completeness and accuracy for the transaction operations, being a mandatory requirement for MiFID
+Investment Firms. Completeness is checking that all transactions that should have been reported have been reported, and
+accuracy is examining that the transactions have been recorded with the right values. 
 
 Specifications: 
 
@@ -12,3 +15,35 @@ Specifications:
  - Implement various approaches to be used in the data fields patterns. 
  - Specify and implement a procedure to make comparisons between different data sets, based on data distribution. 
  - Create a SCALA module that accepts data files and, using different methods to compare them, produces a list of similar sets with the percentage of correlation.
+ 
+Plan:
+
+- Divide the project into three main parts: 1. Implement data structure to be used  2. Implement an enginee that generates
+matches 3. Implement display
+- Approach a simplified problem first, build a machine that decided whether two input data sets match.
+- Enrich the machine to allow more matching criterias and to display results in an interface.
+- The final version can decide whether file 1 is a subset of file 2, produce the matching rows (of the two files) based on different matching criterias (for example comparing data content or distribution), and produce windows that displays results.
+
+Action:
+
+We implemented the machine using:
+
+    File.scala: 
+    Defined trait AbstractFile that provides methods that allow the matching enginee to access (but not modify) the contents or properties of the datasets. 
+    Implemented class File that takes two csv files and store the information in two arrays of strings. Implemented method equal that takes two rows and calculates the level of similarity between them.
+
+    Machine.scala:
+    Defined trait Machine that takes two datasets of type File and produce lists of matchings of rows when implemented.
+    Implemented class RunableMachine that calculates lists of matching rows in polynomial time to the size of the files.
+    Extend RunableMachine to PercentageEqualityMachine that matches rows if more than a certain percentage of their contents match.
+    Extend RunableMachine to DistributionMachine that matches rows if their distribution/shape of contents is exactly the same (therefore abstracting away the actual information).
+
+    MyTable.scala:
+    Defined object MyTable that creates a display using Swing.
+    The display contains clickable buttons that allow users select csv files to be compared. It shows the file contents on a window. It contains sliders and dropdown menus to allow users select different matching criterias. It shows matching results on separate windows with other relevant information such as percentages of accuracy.
+
+We included smallTest.csv which is a subset of smallTest2.csv for testing. We also included largeTest.csv provided by the firm.
+
+Testing:
+
+
