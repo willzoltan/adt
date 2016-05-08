@@ -84,17 +84,28 @@ class PercentageEqualityMachine(source: File, comparator: File, percentage: Int)
 }
 
 //Another implementation, files are matched if there rows have distributions of the same shape
-class DistributionMachine(source: File, comparator: File) extends PercentageEqualityMachine(source,comparator,100) {
+class DistributionMachine(source: File, comparator: File) extends RunableMachine(source,comparator) {
 
   //stores the distribution of rows of two files
-  private val sourceD = new Array[(String,Int)](source.columnCount)
-  private val compD = new Array[(String,Int)](comparator.columnCount)
+  var sourceD = new Array[(String,Int)](source.columnCount)
+  var compD = new Array[(String,Int)](comparator.columnCount)
   
-  private def calcD(i:Int, j:Int) = {  //translate two rows into values of them same type(all integers), call them the distribution of the row
-  
-        var k = 0
+  def calcD(i:Int, j:Int) = {  //translate two rows into values of them same type(all integers), call them the distribution of the row
+    var k = 0
 	var p = 0
+
+    def update(content:String, dis: Array[(String,Int)]) = {
+	  val occ: Option[(String,Int)] = dis.find(_._1 == content)  
+	  println("need to update")
+
+	  occ match {
+	    case Some(v) => { dis(p) = v}
+	    case None    => { dis(p) = (content,k) ; k += 1}
+      }
+	}
+    println("Number of columns is" ++ source.columnCount.toString())
 	while (p < source.columnCount) {
+	  println(" Now we try to calculate the distribution")
 	  update(source.row(i)(p),sourceD)
 	  p += 1
 	}
@@ -103,19 +114,12 @@ class DistributionMachine(source: File, comparator: File) extends PercentageEqua
 	  update(comparator.row(j)(p),compD)
 	  p += 1
 	}
-	
-	def update(content:String, dis: Array[(String,Int)]) = {
-	  val occ: Option[(String,Int)] = dis.find(_._1 == content)
-	  occ match {
-	    case Some(v) => { dis(p) = v}
-	    case None    => { dis(p) = (content,k) ; k += 1}
-      }
-	}
   }
 	
   override def matchRow(i:Int, j:Int): Boolean = {
+	println( "Trying to match")
     calcD(i,j)
-	return (sourceD == compD)
+	return (sourceD.map(_._2) == compD.map(_._2))
   }
 
 }
