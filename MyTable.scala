@@ -168,21 +168,16 @@ object MyTable extends SimpleSwingApplication {
 
   	/* To be completed: pop-up window triggered by clicking Generate Matches */
     def matchWindow() {
-    
+      var matchfile = new RunableMachine(file1, file2)
       //TODO: implement a drop down list instead of cmbType with an option for each type of match.
       cmbType.selection.item match {
-        case "Equality of all columns" => println("EqAll works"); val matchfile = new EqualityMachine(file1, file2)
-        case "Equality on 1 column" => val matchfile = new SingleEqualityMachine(file1, file2)
-        case "N percent matching columns" =>  val matchfile = new PercentageEqualityMachine(file1, file2,sldMatch.value)
+        case "Equality of all columns" => matchfile = new EqualityMachine(file1, file2)
+        case "Equality on 1 column" => matchfile = new SingleEqualityMachine(file1, file2)
+        case "N percent matching columns" =>  matchfile = new PercentageEqualityMachine(file1, file2,sldMatch.value)
       }
       
-      val matchfile = new EqualityMachine(file1, file2)
-      
-//      val rowsWithMatches: List[Int] = matchfile.rowsWithMatches
+      val rowsWithMatches: List[Int] = matchfile.rowsWithMatches
       val arrayOfMatches: Array[List[Int]] = matchfile.arrayOfMatches
-      val rowsWithMatches = List(0,1)
-      arrayOfMatches(0) = List(4,5)
-      arrayOfMatches(1) = List(1,2,3)
       for (i <- arrayOfMatches) println(i)
       
       // TODO: Implement the left hand side table to load in the rows that have matches (stored in rowsWithMatches as list of indicies). And clicking on row(i) brings up the matches on the right hand side.
