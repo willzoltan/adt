@@ -20,7 +20,7 @@ trait Machine {
 
 class RunableMachine(source: File, comparator: File) extends Machine {
   var arrayOfMatches = new Array[List[Int]](source.rowCount);
-  var rowsWithMatches = Nil
+  var rowsWithMatches: List[Int] = Nil
   
   calculateMatchingRows
   calculateRowsWithMatches
@@ -46,10 +46,10 @@ class RunableMachine(source: File, comparator: File) extends Machine {
   
   //returns a list of indices for source where that row has at least one match in the comparator
   def calculateRowsWithMatches = {
-    var rowsWithMatches = Nil
+    rowsWithMatches = Nil
     for (i <- 0 until source.rowCount)
       if (arrayOfMatches(i).length > 0)
-        rowsWithMatches :+ i
+        rowsWithMatches = rowsWithMatches :+ i
   }
 }
 
@@ -58,12 +58,12 @@ class RunableMachine(source: File, comparator: File) extends Machine {
 //The implemented machine to be used
 class PercentageEqualityMachine(source: File, comparator: File, percentage: Int) extends RunableMachine(source, comparator) {
   
-  val threshold: Int = math.ceil((percentage/100)*source.columnCount).toInt
+  
   
   //Implements matching with equality of all rows
   override def matchRow(i: Int, j: Int): Boolean = {
     var count: Int = 0;
-    
+    val threshold: Int = math.ceil((percentage.toFloat/100)*source.columnCount).toInt
     var k: Int = 0;
     var l: Int = 0;
     var matchFound: Boolean = false;
@@ -79,7 +79,7 @@ class PercentageEqualityMachine(source: File, comparator: File, percentage: Int)
       }
       k += 1
     }
-    return (count > threshold)
+    return (count >= threshold)
   }
 }
 

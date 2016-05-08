@@ -4,6 +4,7 @@ import scala.swing._
 import scala.swing.event._
 import javax.swing.table._
 import javax.swing.JFileChooser
+import javax.swing.JTable
 import IO.File
 
 class MyTableModel(var rowData: Array[Array[String]], val columnNames: Seq[String]) extends AbstractTableModel {
@@ -24,7 +25,7 @@ object MyTable extends SimpleSwingApplication {
 
   val top = new MainFrame {
 
-  	title = "MyTable - Kai and Andy 24th April"
+  	title = "ADT Group Project"
 
     val xsize = 800; val ysize = 400
     val topPreferredSize  = new Dimension(xsize, ysize)
@@ -44,12 +45,6 @@ object MyTable extends SimpleSwingApplication {
 
  		/* Contents of the MainFrame */
  		
-    menuBar = new MenuBar {
-      contents += new Menu("File") {
-      //  contents += new MenuItem( Action("Exit") { sys.quit(0) } )
-      }
-    }
-
     val btnFile1 = new Button {
     text = "Find File 1"
     enabled = true
@@ -114,8 +109,6 @@ object MyTable extends SimpleSwingApplication {
     var file1: IO.File = null
     var file2: IO.File = null
     
-    
-    
     reactions += {
       case ButtonClicked(component) =>
       	if (component == btnFile1) {
@@ -126,6 +119,9 @@ object MyTable extends SimpleSwingApplication {
                                row_num1 = file1.rowCount
                                col_num1 = file1.columnCount
                                tableData1 = file1.returnArray(file1.rowCount, file1.columnCount)
+                               if (file1.columnCount > 7) table1.peer.setAutoResizeMode(JTable.AUTO_RESIZE_OFF) else {
+                                table1.peer.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+                               }
                                val newTableModel = new MyTableModel(file1.returnArray(file1.rowCount, file1.columnCount), columnheaders1)
                                table1.model = newTableModel
                                }
@@ -138,9 +134,12 @@ object MyTable extends SimpleSwingApplication {
 						case Some(file) =>  {
                                file2 = new File(file.toString)
                                columnheaders2 = file2.columnNames.toList
-                               row_num1 = file2.rowCount
-                               col_num1 = file2.columnCount
+                               row_num2 = file2.rowCount
+                               col_num2 = file2.columnCount
                                tableData2 = file2.returnArray(file2.rowCount, file2.columnCount)
+                               if (file2.columnCount > 7) table2.peer.setAutoResizeMode(JTable.AUTO_RESIZE_OFF) else {
+                                table2.peer.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+                               }
                                val newTableModel = new MyTableModel(file2.returnArray(file2.rowCount, file2.columnCount), columnheaders2)
                                table2.model = newTableModel
                                }
@@ -158,8 +157,6 @@ object MyTable extends SimpleSwingApplication {
       chooser.setDialogTitle(s"Select File $id")
       chooser.setAcceptAllFileFilterUsed(false)
       if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-        System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory())
-        System.out.println("getSelectedFile(): " + chooser.getSelectedFile())
         return Some(chooser.getSelectedFile())
       } else {
         System.out.println("No Selection"); return None
@@ -178,19 +175,14 @@ object MyTable extends SimpleSwingApplication {
       
       val rowsWithMatches: List[Int] = matchfile.rowsWithMatches
       val arrayOfMatches: Array[List[Int]] = matchfile.arrayOfMatches
-      for (i <- arrayOfMatches) println(i)
-      
-      // TODO: Implement the left hand side table to load in the rows that have matches (stored in rowsWithMatches as list of indicies). And clicking on row(i) brings up the matches on the right hand side.
-  
-  /* We want them to append the row numbers to the start of every column. */
   
   		var notMatched: List[Int] = List()
   		for (i <- 0 until arrayOfMatches.length) {
   			if (arrayOfMatches(i) == Nil) notMatched ::= i
   		}
+      notMatched = notMatched.reverse
   		
   		val arraySize = arrayOfMatches.map(x => x.length).sum
-  		println("arrayOfMatches size: " + arraySize)
   		var newTableModel1 = new Array[Array[String]](arraySize + notMatched.length)
   		var oldRow = 0
   		var newRow = 0
@@ -202,7 +194,6 @@ object MyTable extends SimpleSwingApplication {
   				newRow += 1
   				var blankRow = new Array[String](col_num1) 
   				blankRow = blankRow.map(x => "-")
-  				blankRow(0) = oldRow.toString
   				newTableModel1(newRow) = blankRow
   			}
   			newRow += 1
@@ -212,8 +203,7 @@ object MyTable extends SimpleSwingApplication {
   		var newTableModel2 = new Array[Array[String]](arraySize)
   		var rownums2: List[Int] = List()
   		for (i <- arrayOfMatches) rownums2 = rownums2 ::: i
-  		println(rownums2.length)
-  		for (j <- 0 until rownums2.length) {
+      for (j <- 0 until rownums2.length) {
   			newTableModel2(j) = tableData2(rownums2(j))
   		}
 
@@ -238,6 +228,11 @@ object MyTable extends SimpleSwingApplication {
         }
         
         val matchtable2 = new Table(arraySize, col_num2) { model = newTable2.model }
+            if (col_num1 > 7){
+            newTable1.peer.setAutoResizeMode(JTable.AUTO_RESIZE_OFF)
+            matchtable1.peer.setAutoResizeMode(JTable.AUTO_RESIZE_OFF)}
+            if (col_num2 > 7){
+            matchtable2.peer.setAutoResizeMode(JTable.AUTO_RESIZE_OFF)}
         
         val scrTable2 = new ScrollPane(matchtable2){
           preferredSize = new Dimension (xsize/2, 200)
