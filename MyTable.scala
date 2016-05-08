@@ -82,7 +82,7 @@ object MyTable extends SimpleSwingApplication {
 			paintLabels = true
 		}
 		
-		val cmbType = new ComboBox (List("Equality of all columns","Equality on 1 column","N percent matching columns"))
+		val cmbType = new ComboBox (List("Equality of all columns","Equality on 1 column","N percent matching columns", "Distribution Machine"))
     val btnMatch = new Button("Generate Matches")
     
     val southFlow = new FlowPanel {
@@ -170,6 +170,7 @@ object MyTable extends SimpleSwingApplication {
       cmbType.selection.item match {
         case "Equality of all columns" => matchfile = new EqualityMachine(file1, file2)
         case "Equality on 1 column" => matchfile = new SingleEqualityMachine(file1, file2)
+        case "Distribution Machine" => matchfile = new DistributionMachine(file1, file2)
         case "N percent matching columns" =>  matchfile = new PercentageEqualityMachine(file1, file2,sldMatch.value)
       }
       
