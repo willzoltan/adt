@@ -1,1 +1,14 @@
 Group Report
+
+Specs 
+
+The aim of the project is to construct a method to compare data sets in order to see how these files are similar. This program tests the completeness and accuracy for the transaction operations, being a mandatory requirement for MiFID Investment Firms. Completeness is checking that all transactions that should have been reported have been reported, and accuracy is examining that the transactions have been recorded with the right values. 
+
+Specifications: 
+
+ - Specify a procedure to make comparisons between different data sets, based on data fields values.
+ - Implement various approaches to be used in the data fields values. 
+ - Specify a procedure to make comparisons between different data sets, based on data fields patterns. 
+ - Implement various approaches to be used in the data fields patterns. 
+ - Specify and implement a procedure to make comparisons between different data sets, based on data distribution. 
+ - Create a SCALA module that accepts data files and, using different methods to compare them, produces a list of similar sets with the percentage of correlation.
