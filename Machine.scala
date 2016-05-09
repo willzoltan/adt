@@ -1,6 +1,7 @@
 //Machine.scala
 //This is the machine to be included in the main program, that does calculations and matching
 import IO.File
+import scala.collection.mutable.ArrayBuffer
 
 trait Machine {
   
@@ -83,45 +84,32 @@ class PercentageEqualityMachine(source: File, comparator: File, percentage: Int)
   }
 }
 
-//Another implementation, files are matched if there rows have distributions of the same shape
-class DistributionMachine(source: File, comparator: File) extends RunableMachine(source,comparator) {
-
-  //stores the distribution of rows of two files
-  var sourceD = new Array[(String,Int)](source.columnCount)
-  var compD = new Array[(String,Int)](comparator.columnCount)
-  
-  def calcD(i:Int, j:Int) = {  //translate two rows into values of them same type(all integers), call them the distribution of the row
-    var k = 0
-	var p = 0
-
-    def update(content:String, dis: Array[(String,Int)]) = {
-	  val occ: Option[(String,Int)] = dis.find(_._1 == content)  
-	  println("need to update")
-
-	  occ match {
-	    case Some(v) => { dis(p) = v}
-	    case None    => { dis(p) = (content,k) ; k += 1}
-      }
-	}
-    println("Number of columns is" ++ source.columnCount.toString())
-	while (p < source.columnCount) {
-	  println(" Now we try to calculate the distribution")
-	  update(source.row(i)(p),sourceD)
-	  p += 1
-	}
-	p = 0 ; k = 0
-	while (p < comparator.columnCount) {
-	  update(comparator.row(j)(p),compD)
-	  p += 1
-	}
-  }
+class DistributionMachine(source:File, comparator: File) extends RunableMachine(source, comparator) {
+	val sourceD = Array[Int](source.columnCount)
+	val compD = Array[Int](comparator.columnCount)
 	
-  override def matchRow(i:Int, j:Int): Boolean = {
-	println( "Trying to match")
-    calcD(i,j)
-	return (sourceD.map(_._2) == compD.map(_._2))
-  }
-
+	override def matchRow(i: Int, j: Int): Boolean = {
+		val row1 =  source.row(i) ; 
+		println("Initialization")
+		val row2 = comparator.row(j)
+		calcD(row1,sourceD) ; calcD(row2,compD)
+		return(sourceD == compD)
+	}
+	
+	def calcD(arow: ArrayBuffer[String], dis: Array[Int]) = {
+		println("the distribution length is" ++ dis.length.toString())
+		var l = 0 ; var k = 0
+		while (l < dis.length) {
+            var updated = false
+			println("Going to update row with element" ++ l.toString())
+		    for (p <- 0 to l) {
+				if (arow(p) == arow(l)) { dis(l) = dis(p) ; updated = true}
+			}
+			if (!updated) {dis(l) = k ; k += 1}
+			l += 1
+		}
+	}
+	
 }
 
 //The implemented machine to be used
