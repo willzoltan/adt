@@ -82,7 +82,7 @@ object MyTable extends SimpleSwingApplication {
 			paintLabels = true
 		}
 		
-		val cmbType = new ComboBox (List("Equality of all columns","Equality on 1 column","N percent matching columns", "Distribution Machine"))
+		val cmbType = new ComboBox (List("Equality of all columns","Equality on 1 column","N percent matching columns", "Distribution Matching"))
     val btnMatch = new Button("Generate Matches")
     
     val southFlow = new FlowPanel {
@@ -170,7 +170,7 @@ object MyTable extends SimpleSwingApplication {
       cmbType.selection.item match {
         case "Equality of all columns" => matchfile = new EqualityMachine(file1, file2)
         case "Equality on 1 column" => matchfile = new SingleEqualityMachine(file1, file2)
-        case "Distribution Machine" => matchfile = new DistributionMachine(file1, file2)
+        case "Distribution Matching" => matchfile = new DistributionMachine(file1, file2)
         case "N percent matching columns" =>  matchfile = new PercentageEqualityMachine(file1, file2,sldMatch.value)
       }
       
@@ -242,11 +242,27 @@ object MyTable extends SimpleSwingApplication {
           verticalScrollBarPolicy = ScrollPane.BarPolicy.AsNeeded
         }
         scrTable1.peer.getVerticalScrollBar().setModel(scrTable2.peer.getVerticalScrollBar().getModel());
-        val tableSplit = new SplitPane(Orientation.Vertical)
-        tableSplit.leftComponent = scrTable1
-        tableSplit.rightComponent = scrTable2
-        contents = tableSplit
+
+      val leftPanel2 = new BorderPanel {
+      import BorderPanel.Position._
+      add(new Label("Rows with Matches in File 1"), North)
+      add(scrTable1, Center)
+    }
+
+      val rightPanel2 = new BorderPanel {
+      import BorderPanel.Position._
+      add(new Label("Corresponding Matches in File 2"), North)
+      add(scrTable2, Center)
+    }
+          val tableSplit = new SplitPane(Orientation.Vertical)
+        tableSplit.leftComponent = leftPanel2
+        tableSplit.rightComponent = rightPanel2
+
+    contents = tableSplit
+
       }
+
+
     }
   }
 }
