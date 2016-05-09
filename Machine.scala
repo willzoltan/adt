@@ -95,7 +95,6 @@ class DistributionMachine(source: File, comparator: File) extends RunableMachine
 		//println(sourceD.length.toString() ++ "is the array length and row's length is" ++ row1.length.toString())
 		calcD(row1,sourceD) ; calcD(row2,compD)
 		var matched = true
-		for (i <- 0 until sourceD.length) { println(sourceD(i).toString())}
 		for (i <- 0 until sourceD.length) { if (sourceD(i) != compD(i)) { matched = false } }
 		return matched
 	}
