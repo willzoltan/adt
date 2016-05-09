@@ -86,6 +86,7 @@ class PercentageEqualityMachine(source: File, comparator: File, percentage: Int)
 
 class DistributionMachine(source: File, comparator: File) extends RunableMachine(source, comparator) {
 	
+	
 	override def matchRow(i: Int, j: Int): Boolean = {
 		val row1 =  source.row(i) ; 
 		val row2 = comparator.row(j)
