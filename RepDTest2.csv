@@ -1,28 +1,28 @@
-Name,Company,Code,Email
-Andrew Webber,Microsoft,UUU999,nnnfff@S
-Aneesh Shukla,Bank of America Merrill Lynch,2244,VVV@uu
-Ariel Goyeneche,Bank of America Merrill Lynch,WWWWW7,UU@uu
-Beth Gorman,GResearch,TTTB,qqq@qqqr
-Brian O’Kennedy,Oxford Asset Management,QQWE,eeee@ooam
-Demelza Farrer,IBM,1222,J@mm
-Edmund Pringle,Metaswitch,222000,LLLLL@MM
-Emily Leonard,Palantir,FF333,TT@FF
-Geoff Hughes,Microsoft,PPYYYYY,mMM@S
-James Paulin,Oxford Asset Management,2210,Ddd@ooam
-Kate Platonova,Morgan Stanley,TTTF,abc@abc
-Lee Stott,Microsoft,KKKQQ,OOO@R
-Liz Saunders,IBM,LSBBB,Cc@MM
-Mateusz Ujma,Winton Capital,447,RRR@WWW
-Matt Hope,GResearch,TTTME,ff@gggr
-Matt Johnson,Frontier Games,99F,YYYRR@F
-Matthias Gaunart,Bloomberg,1112,AA@bbb
-Michael Coleman,IBM,MCBBB,iii@mm
-Nick Smith,Imagination Technologies,5555,x@AAAA
-Niti Williamson,Winton Capital,4444Q,sss@WWW
-Paul Hudspith,Morgan Stanley,RRRMM,pP@MS
-Piers Thompson,Bank of America Merrill Lynch,QQQ33,w@uu
-Richard Appleby,IBM,12FFF,4444@OO
-Sonia Maciuszewicz,Entrepreneur First,QBBB,aaa@EEN
-Tom Newcomb,Oxford Asset Management,2211,CCCC@ooam
-Wojtek Rzepala,Bloomberg,AAAF,BB@bbb
-Yvonne Dawes,Frontier Games,888T,ZZF@FTT
+"Name","Company","Code","Email"
+"Andrew Webber","Microsoft","UUU999","nnnfff@S"
+"Aneesh Shukla","Bank of America Merrill Lynch","2244","VVV@uu"
+"Ariel Goyeneche","Bank of America Merrill Lynch","WWWWW7","UU@uu"
+"Beth Gorman","GResearch","TTTB","qqq@qqqr"
+"Brian O’Kennedy","Oxford Asset Management","QQWE","eeee@ooam"
+"Demelza Farrer","IBM","1222","J@mm"
+"Edmund Pringle","Metaswitch","222000","LLLLL@MM"
+"Emily Leonard","Palantir","FF333","TT@FF"
+"Geoff Hughes","Microsoft","PPYYYYY","mMM@S"
+"James Paulin","Oxford Asset Management","2210","Ddd@ooam"
+"Kate Platonova","Morgan Stanley","TTTF","abc@abc"
+"Lee Stott","Microsoft","KKKQQ","OOO@R"
+"Liz Saunders","IBM","LSBBB","Cc@MM"
+"Mateusz Ujma","Winton Capital","447","RRR@WWW"
+"Matt Hope","GResearch","TTTME","ff@gggr"
+"Matt Johnson","Frontier Games","99F","YYYRR@F"
+"Matthias Gaunart","Bloomberg","1112","AA@bbb"
+"Michael Coleman","IBM","MCBBB","iii@mm"
+"Nick Smith","Imagination Technologies","5555","x@AAAA"
+"Niti Williamson","Winton Capital","4444Q","sss@WWW"
+"Paul Hudspith","Morgan Stanley","RRRMM","pP@MS"
+"Piers Thompson","Bank of America Merrill Lynch","QQQ33","w@uu"
+"Richard Appleby","IBM","12FFF","4444@OO"
+"Sonia Maciuszewicz","Entrepreneur First","QBBB","aaa@EEN"
+"Tom Newcomb","Oxford Asset Management","2211","CCCC@ooam"
+"Wojtek Rzepala","Bloomberg","AAAF","BB@bbb"
+"Yvonne Dawes","Frontier Games","888T","ZZF@FTT"

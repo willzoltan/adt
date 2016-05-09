@@ -107,7 +107,7 @@ class DistributionMachine(source: File, comparator: File) extends RunableMachine
             var updated = false
 			//println("Going to update row with element" ++ l.toString())
 		    for (p <- 0 to l) {
-				if (arow(p) == arow(l)) { dis(l) = dis(p) ; updated = true}
+				if (arow.apply(p) == arow.apply(l)) { dis(l) = dis(p) ; updated = true}
 			}
 			if (!updated) {dis(l) = k ; k += 1}
 			l += 1
