@@ -85,23 +85,24 @@ class PercentageEqualityMachine(source: File, comparator: File, percentage: Int)
 }
 
 class DistributionMachine(source:File, comparator: File) extends RunableMachine(source, comparator) {
-	val sourceD = Array[Int](source.columnCount)
-	val compD = Array[Int](comparator.columnCount)
 	
 	override def matchRow(i: Int, j: Int): Boolean = {
-		val row1 =  source.row(i) ; 
-		println("Initialization")
-		val row2 = comparator.row(j)
+		var row1 =  source.row(i) ; 
+		//println("Initialization")
+		var row2 = comparator.row(j)
+		val sourceD = new Array[Int](row1.length)
+	    val compD = new Array[Int](row2.length)
+		//println(sourceD.length.toString() ++ "is the array length")
 		calcD(row1,sourceD) ; calcD(row2,compD)
 		return(sourceD == compD)
 	}
 	
 	def calcD(arow: ArrayBuffer[String], dis: Array[Int]) = {
-		println("the distribution length is" ++ dis.length.toString())
+		//println("the distribution length is" ++ dis.length.toString())
 		var l = 0 ; var k = 0
 		while (l < dis.length) {
             var updated = false
-			println("Going to update row with element" ++ l.toString())
+			//println("Going to update row with element" ++ l.toString())
 		    for (p <- 0 to l) {
 				if (arow(p) == arow(l)) { dis(l) = dis(p) ; updated = true}
 			}
