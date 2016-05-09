@@ -240,7 +240,8 @@ object MyTable extends SimpleSwingApplication {
           minimumSize = new Dimension(xsize/3, 200)
           horizontalScrollBarPolicy = ScrollPane.BarPolicy.AsNeeded
           verticalScrollBarPolicy = ScrollPane.BarPolicy.AsNeeded
-        }       
+        }
+        scrTable1.peer.getVerticalScrollBar().setModel(scrTable2.peer.getVerticalScrollBar().getModel());
         val tableSplit = new SplitPane(Orientation.Vertical)
         tableSplit.leftComponent = scrTable1
         tableSplit.rightComponent = scrTable2
