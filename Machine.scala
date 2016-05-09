@@ -106,10 +106,13 @@ class DistributionMachine(source: File, comparator: File) extends RunableMachine
 		while (l < dis.length) {
             var updated = false
 			//println("Going to update row with element" ++ l.toString())
-		    for (p <- 0 to l) {
+		    /*for (p <- 0 to l) {
 				if (arow.apply(p) == arow.apply(l)) { dis(l) = dis(p) ; updated = true}
 			}
-			if (!updated) {dis(l) = k ; k += 1}
+			if (!updated) {dis(l) = k ; k += 1}*/
+			val index = arow.indexOf(arow.apply(l),0)
+			if (index == l) { dis(l) = k ; k += 1}
+			else { dis(l) = dis(index) }
 			l += 1
 		}
 	}
