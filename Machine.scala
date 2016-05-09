@@ -90,11 +90,12 @@ class DistributionMachine(source: File, comparator: File) extends RunableMachine
 	override def matchRow(i: Int, j: Int): Boolean = {
 		val row1 =  source.row(i) ; 
 		val row2 = comparator.row(j)
-		val sourceD = new Array[Int](source.columnCount)
-	    val compD = new Array[Int](comparator.columnCount)
+		var sourceD = new Array[Int](source.columnCount)
+	    var compD = new Array[Int](comparator.columnCount)
 		//println(sourceD.length.toString() ++ "is the array length and row's length is" ++ row1.length.toString())
 		calcD(row1,sourceD) ; calcD(row2,compD)
 		var matched = true
+		for (i <- 0 until sourceD.length) { println(sourceD(i).toString())}
 		for (i <- 0 until sourceD.length) { if (sourceD(i) != compD(i)) { matched = false } }
 		return matched
 	}

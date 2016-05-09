@@ -1,6 +1,8 @@
-Name,Email,Email2,Email3,Email4,Email5,Email6
-A,1111,1111,1111,1111,1111,1111
-B,bb,cc,bb,bb,cc,dd
-C,1,1,1,2,3,4
-D,a,b,c,d,e,f
-E,1111,1111,1112,1112,1112,1112
+"name","email","name","email","name","email"
+"Abce","jack2@test.com","Abce","jack2@test.com","Abce","jack2@test.com"
+"Def","Sue@foo.co.uk","Def","Sue@foo.co.uk","Def","Sue@foo.co.uk"
+"Def","Sue@foo.co.uk","Def","Sue@foo.co.uk","Def","Sue@foo.co.uk"
+"Def","Sue@foo.co.uk","Def","Sue@foo.co.uk","Def","Sue@foo.co.uk"
+"Abc","jack@test.com","Abc","jack@test.com","Abc","jack@test.com"
+"Abc","jack@test.com","Abc","jack@test.com","Abc","jack@test.com"
+"bbk","mc@test.com","bbk","mc@test.com","bbk","mc@test.com"
